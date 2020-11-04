@@ -69,3 +69,33 @@ caja
 attributes(mdat)#siempre importante ver los atributos de los objectos
 names(ventas)<-usuarios
 ventas["Dario"]
+
+# objetos s3 --------------------------------------------------------------
+
+sexo<-sample(c("M","f"),600,replace = T)
+sexo
+table(sexo)#siempre usar table para variables ordinales o categorias
+table(usuarios)
+table(meses)
+#usamos summary para un resumen estadistico 
+summary(egresos)
+instruccion<-sample(c("primaria ","secundaria","universidad","posgrado"),1000,replace=T                    )
+instruccion
+table(instruccion)
+plot(table(instruccion))
+#facvtores 
+factor_instruccion<-factor(instruccion)
+factor_instruccion
+class(factor_instruccion)
+typeof(factor_instruccion)
+attributes(factor_instruccion)
+as.numeric(factor_instruccion)
+factor_corregido<-factor(instruccion,levels = c("primaria ","secundaria","universidad","posgrado"))
+factor_corregido
+resumen_instruccion<-table(factor_corregido)
+plot(resumen_instruccion)
+#herramienta para sacar intervalos
+intervalos_ventas<-cut(ventas,breaks = c(0,20,100,300,1000))
+intervalos_ventas     
+resumen_ventas<-table(intervalos_ventas)
+plot(resumen_ventas)
