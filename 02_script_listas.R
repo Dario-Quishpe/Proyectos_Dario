@@ -99,3 +99,89 @@ intervalos_ventas<-cut(ventas,breaks = c(0,20,100,300,1000))
 intervalos_ventas     
 resumen_ventas<-table(intervalos_ventas)
 plot(resumen_ventas)
+
+# Clase 3 FEchas ----------------------------------------------------------
+hoy<-Sys.Date()
+hoy
+class(hoy)
+as.numeric(hoy)
+hoy_ch<-as.character(hoy)
+hoy_ch
+fecha<-as.Date("2020-01-05")
+fecha
+#por defecto es siempre año mes y dia 
+fecha<-as.Date("2020/01/05")
+fecha
+
+# Formatos de fecha -------------------------------------------------------
+
+fecha<-as.Date("2020/01/05",format= "%Y/%d/%m")#cambio el formato , cualquier cosa hay formatos en goggle
+fecha
+Sys.getlocale()
+fecha<-as.Date("Julio 20 2020" ,format="%B %d %Y")
+fecha
+help("as.date")
+Sys.setlocale("LC_ALL","Spanish_Ecuador")
+Sys.getlocale()
+#cambiar origen de la fecha y saber que dia va ser 
+as.Date(60,origin="2020-01-01")
+typeof(fecha)
+now_ct<-as.POSIXct("2020-10-5 22:00",tz="UTC" )
+now_ct
+attributes(now_ct)
+typeof(now_ct)
+#recordar al momento de trabajar con horas puedo trabajar con posix (segundos),as.date (dias)
+#cambiando fechas
+structure(now_ct,tzone="Asia/Tokio")
+structure(now_ct,tzone="America/New_York")
+structure(now_ct,tzone="Europa/Paris")
+
+# DATAFRAMES --------------------------------------------------------------
+class(iris)
+attributes(iris)
+iris
+table(iris)
+summary(iris)
+str(iris)
+
+# subsets con dataframes --------------------------------------------------
+
+iris$Sepal.Length
+iris["Sepal.Length"]
+a<-iris[,1]
+b<-iris[1,]
+class(b)
+plot(iris)
+#columnas
+iris[,c("Species","Sepal.Length")]
+iris[["Species"]]
+iris[,c(2,1,2)]
+#parafilas
+iris[c(1:15),]
+vector<-rnorm(100)
+mat<-matrix(vector,ncol = 5,nrow = 20)
+mat
+mat<-as.data.frame(mat)
+#se puede hacer con vetores indipendientes
+head(mat,n=21)#primeras obs
+tail(mat)#ultima observaciones
+#ingresar una columna en un datframe
+mat$anio<-sample(1970:2020,20,replace = T)
+mat
+mes<-sample(1:12,20,replace = T)
+dia<-sample(1:30,20,replace=T)
+mat$mes<-mes
+mat$dia<-dia
+mat
+fecha_texto<-paste(mat$anio,"-",mat$mes,"-",mat$dia,sep="")
+fecha_texto<-as.Date(fecha_texto)
+mat$fecha_texto<-fecha_texto
+mat
+mat$suma<-mat$V1+mat$V2
+mat
+sort(mat$fecha_texto)#ordenar
+orden<-order(mat$fecha_texto)
+mat_ord<-mat[orden,]
+mat_ord
+print(mat_ord)
+
