@@ -83,3 +83,72 @@ for(i in 2:20){
     }
   
 }
+
+
+# Fibonacci ---------------------------------------------------------------
+
+x<-c()
+x[1]=0
+x[2]=1
+x
+for(i in 3:20){
+  x[i]<- x[i-1] + x[i-2]
+  print(x[i])
+}
+x
+
+# NOrmalizar matrices -----------------------------------------------------
+
+my.mat<-matrix(NA,nrow = 100,ncol = 20)
+for(i in 1:ncol(my.mat)){
+  my.mat[,i]<-rpois(100,lambda = i)  
+}
+my.mat
+means<-c()
+for(i in 1:ncol(my.mat)){
+  means[i]<-mean(my.mat[,i],na.rm = T)#remover valores NA en las columnas , asi puedo usar la funcion media(mean)  
+}
+sdv<-c()
+for(i in 1:ncol(my.mat)){
+  sdv[i]<-sd(my.mat[,i],na.rm = T)#remover valores NA en las columnas , asi puedo usar la funcion media(mean)  
+}
+sdv
+
+means
+length(means)
+#ejemplo de remover valores Na de un vector 
+vector_NA<-c(3,4,1,NA,10,3,NA)-3
+mean(vector_NA)
+mean(vector_NA,na.rm = T)
+table(vector_NA,useNA = "ifany")#cuento el numero de NA que se encuentran en mi vector
+summary(vector_NA)
+#vamos a operar con filas y con columnas#forma extendida 
+centrada<-matrix(NA,nrow = 100,ncol = 20)
+for(i in 1:ncol(my.mat)){
+centrada[,i]<-(my.mat[,i]-means[i])/sdv[i]  
+  
+}
+View(centrada)
+#forma compavta y uso de aplyy
+centrada1<-apply(X=my.mat,
+                 MARGIN=2,#1 para filas , 2 para columnas y 3 para arrays 
+                  FUN = function(x){
+                  (x-mean(x,na.rm = T ))/sd(x)  
+                  })
+
+centrada1
+#forma numero tres de normalizar la matriz
+identical(centrada,centrada1)
+centrada_2<-scale(my.mat,center=T,scale=T)
+centrada_2
+View(centrada_2)
+#generador de Na (poner aleatoriamente Na en una matriz o data frame )
+vector<-rnorm(1000,mean=50,sd=20)
+ind_vacios<-sample(1:1000,50)
+length(ind_vacios)
+vector[ind_vacios]<-NA
+vector
+summary(vector)
+ validacion<-is.na(vector)#bucando los vacios
+vector[validacion]<-0 #reemplazando los vacios
+vector
