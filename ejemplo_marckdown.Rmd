@@ -1,0 +1,49 @@
+---
+title: "Ejemplo Markdown"
+author: "Dario Quishpe"
+date: "10/11/2020"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Mi primer documento en markdown , herramienta de edicion y creacion de documentos , en la cual se puede mezclar el codigo de R con texto comun .
+En markdown los documentos `.Rmd`. 
+
+> se pueden ver como:   
+
+* Html  
+* pdf  
+* word  
+
+El software que nos ayuda con esta tarea es *Rstudio*
+
+![Rstudio](https://blog.desdelinux.net/wp-content/uploads/2019/02/rstudio-og.png.webp)
+ 
+
+
+```{r iris}
+summary(iris)
+x<-2
+y<-5
+z<-x+y
+z
+
+```
+
+## Including Plots
+
+Puedo ir incluyendo graficas ya predeterminadas o cargadas en la consola 
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
