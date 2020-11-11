@@ -6,25 +6,238 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
+
+# Instalar el paquete "radxl" 
+if(!"readxl" %in% installed.packages()[,1]){
+  install.packages("readxl")
+}
+
+library(readxl)
+
+
 ```
 
-## R Markdown
+# Introducción
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Al sexto día del curso **Herramientas de análisis con R** es hora de ver una aplicación con una base de datos real. El caso de estudio nos ayudará a recorrer los elementos tratados en clase, y otros de tipo estadístico que serán de utilidad para el estudiante.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Notas Markdown:
 
-```{r cars}
-summary(cars)
+> `include=FALSE` corre el código, pero ni este ni su resultado aparece en el documento
+> `warnings=FALSE` corre el código, si encuentra un **warning** no lo imprime
+> `message=FALSE` corre el código, si encuentra un **message** no lo imprime
+> `error=FALSE` corre el código, si encuentra un **error** lo omite y pasa al siguiente (OJO con las dependencias)
+> `echo=FALSE` se ejecuta el código, se imprime el resultado pero no el código
+> `fig.{caracteristica}` opciones para modificar la presentación de los gráficos
+# Brecha salarial por sexo 
+
+## Lectura de la base
+
+```{r}
+# Insertar chunk con ctrl+alt+I
+path <- "datos/enemdu_persona_201912.csv"
+readLines(path,n = 3)
+enemdu <- read.csv(path, #  Nombre del archivo
+                   sep = ";", # Separador
+                   header = T) # Leer con cabecera
+dimensiones <- dim(enemdu)
+
+enemdu
 ```
 
-## Including Plots
+La tabla enemdu tiene   `r dimensiones[1]` filas y  `r dimensiones[2]` columnas.
 
-You can also embed plots, for example:
+## Lectura del diccionario
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+dicc_path <- list.files("diccionarios/",full.names = T)
+hojas <- excel_sheets(dicc_path)
+hoja_1 <- read_excel(path = dicc_path,sheet = hojas[1],range = "C15:G170")
+variables <- c(sexo = "p02",
+               edad = "p03",
+               a_trabajo = "p45",
+               nivel_inst = "p10a",
+               h_trabajo = "p51a",
+               ingresos = "p66")
+diccionario <- hoja_1[hoja_1$`CODIGO DE LA VARIABLE` %in% variables, ]
+diccionario
+```
+ 
+## Sacar las columnas de la base
+
+```{r}
+enemdu <- enemdu[ ,variables]
+head(enemdu)
+# Navego en la lista de tipos de objeto en el data.frame:
+# Cuando uso lapply, en una frame, cada columna es un elemento de una lista:
+lapply(X = enemdu,FUN = function(x)class(x))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Diccioanrios de variables:
+
+[ANDA Inec](https://anda.inec.gob.ec/anda/index.php/catalog/269/data_dictionary)
+
+```{r}
+# Con `datapasta`
+# Ctrl+c de la tabla (tiene que ser una tabla)
+# Y te vas al boton addins y das PAste as Tribble:
+tibble::tribble(
+     ~Valor,                  ~Categoría, ~Weighted,
+        "1",                   "Ninguno",   744495L,
+        "2",  "Centro de alfabetización",    46095L,
+        "3",        "Jardín de infantes",        0L,
+        "4",                  "Primaria",  3490529L,
+        "5",          "Educación básica",  3362979L,
+        "6",                "Secundaria",  2908802L,
+        "7",           "Educación media",   832464L,
+        "8", "Superior no universitaria",    75651L,
+        "9",    "Superior universitaria",  1795873L,
+       "10",                "Post-grado",    55783L,
+  "Sysmiss",                          NA,  1165459L
+  )
+# Paste as data.frame:
+niv_inst <- data.frame(
+  stringsAsFactors = FALSE,
+             Valor = c("1","2","3","4","5","6",
+                       "7","8","9","10","Sysmiss"),
+         Categoria = c("Ninguno",
+                       "Centro de alfabetización","Jardín de infantes","Primaria",
+                       "Educación básica","Secundaria","Educación media",
+                       "Superior no universitaria","Superior universitaria","Post-grado",NA),
+          Weighted = c(744495L,46095L,0L,3490529L,
+                       3362979L,2908802L,832464L,75651L,1795873L,55783L,
+                       1165459L)
+)
+# Paste as vector:
+c("Valor\tCategoría\tWeighted", "1 \tNinguno \t744495", "2 \tCentro de alfabetización \t46095", "3 \tJardín de infantes \t0", "4 \tPrimaria \t3490529", "5 \tEducación básica \t3362979", "6 \tSecundaria \t2908802", "7 \tEducación media \t832464", "8 \tSuperior no universitaria \t75651", "9 \tSuperior universitaria \t1795873", "10 \tPost-grado \t55783", "Sysmiss \t\t1165459")
+sexo <- data.frame(
+  stringsAsFactors = FALSE,
+       check.names = FALSE,
+             Valor = c(1L, 2L),
+      Categoria = c("Hombre", "Mujer"),
+          Weighted = c(7078625L, 7399504L)
+)
+```
+
+# Análiis exploratorio
+
+```{r}
+head(enemdu) 
+names(enemdu) <- names(variables)
+head(enemdu) 
+apply(X = enemdu, MARGIN = 2, FUN = summary)
+```
+
+# Errores en la base:
+
+* Sexo no es una variable una variable numérica
+* nivel de instrucción no es una variable una variable numérica
+* En edad 99 es "No informa" le asignamos como vacio
+* En ingresos 999999 es "No informa" le asignamos como vacio
+
+# Soluciones
+* Sexo y nivel de instrucción convertir a factor
+* En ingresos y edad crear un condicional
+
+## Corrección de sexo:
+
+```{r}
+# Crear un chink ctrl + alt + I
+table(enemdu$sexo)
+sexo
+enem_sexo <- factor(enemdu$sexo)
+  levels(enem_sexo)
+  # Transformo a factor mi variable sexo:
+enemdu$sexo <- factor(x = enem_sexo,
+       levels = levels(enem_sexo),
+       labels = sexo$Categoria)
+head(enemdu)
+```
+
+
+## Corrección de nivel de instruccoón:
+
+```{r}
+enem_nivel_inst <- factor(enemdu$nivel_inst)
+  levels(enem_nivel_inst)
+  # hay un vacio en la tabla de nivel de instruccion
+  
+  # en la base no hay categoria igual a 3:
+  niv_inst <- niv_inst[niv_inst$Valor != "3", ]
+  nivs <- na.omit(niv_inst$Categoria)
+  
+  # Transformo a factor mi variable sexo:
+enemdu$nivel_inst <- factor(x = enem_nivel_inst,
+       levels = levels(enem_nivel_inst),
+       labels = nivs)
+head(enemdu)
+```
+
+## Corregir edades:
+
+```{r}
+# which indica las posiciones que cumplen una condición:
+posiciones_vacias <- which(enemdu$edad == 99L)
+enemdu$edad[posiciones_vacias] <- NA_integer_
+```
+## Corregir ingresos:
+
+```{r}
+# which indica las posiciones que cumplen una condición:
+posiciones_vacias <- which(enemdu$ingresos == 999999L)
+enemdu$ingresos[posiciones_vacias] <- NA_integer_
+```
+# Resultado:
+
+```{r}
+lapply(X = enemdu, FUN = summary)
+```
+
+Queremos quedarnos con la tabla de observaciones que tienen todos los campos:
+
+
+```{r}
+enemdu <- enemdu[complete.cases(enemdu), ]
+dim(enemdu)
+```
+
+```{r}
+hombres <- enemdu[enemdu$sexo == "Hombre",]
+lapply(X = hombres, FUN = summary)
+mujeres <- enemdu[enemdu$sexo == "Mujer",]
+lapply(X = mujeres, FUN = summary)
+```
+
+# Modelo:
+
+#### comando `lm`
+ * El signo `~` indica los lados de la ecuación
+ * Al lado izquierdo ponemos la variable que queremos explicar (en este caso los ingresos)
+ * Del lado derecho definimos los regresores o variables explicativos o variables independientes
+ * Declarando un set de datos 
+
+Primero veo la regresión para los hombres:
+
+```{r}
+modelo <- lm(formula = ingresos ~  h_trabajo + nivel_inst + a_trabajo + edad + h_trabajo,data = hombres)
+modelo
+summary(modelo)
+```
+
+Segundo veo la regresión para las mujeres:
+
+```{r}
+modelo_2 <- lm(formula = ingresos ~ h_trabajo + nivel_inst + a_trabajo + edad + h_trabajo,data = mujeres)
+modelo_2
+summary(modelo_2)
+```
+
+# Modelo conjunto
+
+```{r}
+modelo_3 <- lm(formula = ingresos ~ sexo + h_trabajo + nivel_inst + a_trabajo + edad + h_trabajo,data = enemdu)
+modelo_3
+summary(modelo_3)
+```
