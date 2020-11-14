@@ -16,6 +16,11 @@ if(!"readxl" %in% installed.packages()[,1]){
 
 library(readxl)
 
+if(!"datapasta" %in% installed.packages()[,1]){
+  install.packages("datapasta")
+}
+
+library(datapasta)
 
 ```
 
@@ -44,7 +49,6 @@ enemdu <- read.csv(path, #  Nombre del archivo
                    header = T) # Leer con cabecera
 dimensiones <- dim(enemdu)
 
-enemdu
 ```
 
 La tabla enemdu tiene   `r dimensiones[1]` filas y  `r dimensiones[2]` columnas.
