@@ -396,8 +396,11 @@ dimensiones &lt;- dim(enemdu)</code></pre>
 <div id="lectura-del-diccionario" class="section level2">
 <h2>Lectura del diccionario</h2>
 <pre class="r"><code>dicc_path &lt;- list.files(&quot;diccionarios/&quot;,full.names = T)
+#lista de archivos que se encuentran en la carpeta diccionarios y guardo la direccion
 hojas &lt;- excel_sheets(dicc_path)
+#leer las hojas de calculo que se encuentran en dichos archivos (guardo los nombres) 
 hoja_1 &lt;- read_excel(path = dicc_path,sheet = hojas[1],range = &quot;C15:G170&quot;)
+#siempre tener cuidado con el range pues de donde a donde va la tabla en el documento excel....revisar....
 variables &lt;- c(sexo = &quot;p02&quot;,
                edad = &quot;p03&quot;,
                a_trabajo = &quot;p45&quot;,

@@ -21,6 +21,7 @@ if(!"datapasta" %in% installed.packages()[,1]){
 }
 
 library(datapasta)
+#esta libreia de aqui es muy poderosa me permite copiar una tabla de algun lugar y pegarla en un documento #de r para despues generar un objeto en el documento 
 
 ```
 
@@ -56,17 +57,33 @@ La tabla enemdu tiene   `r dimensiones[1]` filas y  `r dimensiones[2]` columnas.
 ## Lectura del diccionario
 
 ```{r}
+
 dicc_path <- list.files("diccionarios/",full.names = T)
+
 hojas <- excel_sheets(dicc_path)
+
 hoja_1 <- read_excel(path = dicc_path,sheet = hojas[1],range = "C15:G170")
+
 variables <- c(sexo = "p02",
                edad = "p03",
                a_trabajo = "p45",
                nivel_inst = "p10a",
                h_trabajo = "p51a",
-               ingresos = "p66")
+               ingresos = "p66",
+               fexp="fexp")
+
 diccionario <- hoja_1[hoja_1$`CODIGO DE LA VARIABLE` %in% variables, ]
+
 diccionario
+```
+```{r, inlclude = false}
+#Apuntes
+#lista de archivos que se encuentran en la carpeta diccionarios y guardo la direccion  list.files
+#leer las hojas de calculo que se encuentran en dichos archivos (guardo los nombres) excel_sheets
+#siempre tener cuidado con el range pues de donde a donde va la tabla en el documento excel....revisarread #_excel
+#%IN% ESTE COMANDO SE ENCARGA DE VERIFICAR SI LOS ELEMENTOS DE UNO DE LOS VETORES SE ENCUENTRA DENTRO DE OTRO VECTPR 
+#SIEMPRE RECORDAR QUE ES IMPORTANTE NO TENER LOS ARCHIVOS CON LAS BASES DE DATOS ABIERTOS O DOCUMENTOS DE EXCEL ABIERTOS PUES PUEDE HACER QUE VARIOS COMANDOS NO SE EJECUTEN ....
+
 ```
  
 ## Sacar las columnas de la base
@@ -78,6 +95,10 @@ head(enemdu)
 # Cuando uso lapply, en una frame, cada columna es un elemento de una lista:
 lapply(X = enemdu,FUN = function(x)class(x))
 ```
+```{r,include=FALSE}
+#Notemos que la clase de las variables que tenemos en enemdu son todas enteras , pero esto no es verdad hasta cierto punto pues , el sexo , el nivel de instruccion son variables categoricas y ordinales repectivamente , se necesita ccorregir esto para continuar con el respectivo analisis
+```
+
 
 Diccioanrios de variables:
 
@@ -86,21 +107,44 @@ Diccioanrios de variables:
 ```{r}
 # Con `datapasta`
 # Ctrl+c de la tabla (tiene que ser una tabla)
+#ejemplo de uso de libreria datapasta
+#tibble::tribble(
+#                  ~TARIFA,   ~`2D`,   ~`3D`,
+ #          "2X1 MOVIECARD", "$4.90", "$6.30",
+#  "CONADIS Y TERCERA EDAD", "$2.20", "$3.15",
+ #              "MOVIECARD", "$3,70", "$5,25",
+  #                  "NIÑO", "$3,80", "$5,75",
+   #               "ADULTO", "$4,40", "$6,30"
+  #)
+
+#como podemos observar al copiar una tabla del internet y pegarla con addins en r con as trible se genera #un objeto el cual se puede manipular en
+
 # Y te vas al boton addins y das PAste as Tribble:
-tibble::tribble(
-     ~Valor,                  ~Categoría, ~Weighted,
-        "1",                   "Ninguno",   744495L,
-        "2",  "Centro de alfabetización",    46095L,
-        "3",        "Jardín de infantes",        0L,
-        "4",                  "Primaria",  3490529L,
-        "5",          "Educación básica",  3362979L,
-        "6",                "Secundaria",  2908802L,
-        "7",           "Educación media",   832464L,
-        "8", "Superior no universitaria",    75651L,
-        "9",    "Superior universitaria",  1795873L,
-       "10",                "Post-grado",    55783L,
-  "Sysmiss",                          NA,  1165459L
-  )
+# tibble::tribble(
+#    ~Valor,                  ~Categoría, ~Weighted,
+#      "1",                   "Ninguno",   744495L,
+#     "2",  "Centro de alfabetización",    46095L,
+# 
+#      "3",        "Jardín de infantes",        0L,
+#   "4",                  "Primaria",  3490529L,
+#  "5",          "Educación básica",  3362979L,
+# "6",                "Secundaria",  2908802L,
+# "7",           "Educación media",   832464L,
+# "8", "Superior no universitaria",    75651L,
+# "9",    "Superior universitaria",  1795873L,
+# "10",                "Post-grado",    55783L,
+# "Sysmiss",                          NA,  1165459L
+  #)
+# data.frame(
+#   stringsAsFactors = FALSE,
+#        check.names = FALSE,
+#             TARIFA = c("2X1 MOVIECARD",
+#                        "CONADIS Y TERCERA EDAD","MOVIECARD","NIÑO","ADULTO"),
+#               `2D` = c("$4.90", "$2.20", "$3,70", "$3,80", "$4,40"),
+#               `3D` = c("$6.30", "$3.15", "$5,25", "$5,75", "$6,30")
+# )
+
+#NO OLVIDAR ; CTRL SHIF C SIRVE PARA COMENTAR VARIAS LINEAS DE CODIGO 
 # Paste as data.frame:
 niv_inst <- data.frame(
   stringsAsFactors = FALSE,
@@ -131,7 +175,7 @@ sexo <- data.frame(
 head(enemdu) 
 names(enemdu) <- names(variables)
 head(enemdu) 
-apply(X = enemdu, MARGIN = 2, FUN = summary)
+lapply(X = enemdu,  FUN = summary)
 ```
 
 # Errores en la base:
