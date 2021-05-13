@@ -31,10 +31,38 @@ Acontinuacion debe aparecer el directorio en amarillo.
 
 Finalmente pegamos el enlace al directorio que vayamos a utilizar(esto depende si se trabaja en grupo o no ) , con esto ultimo en la carpeta documentos debe estar la carpeta en la cual se va a trabajar.
 
-Para verificar que todo se haya realizado correctamente usamos el comando gitwd(), tendra que decirnos que nos encontramos en  documentos
+Para verificar que todo se haya realizado correctamente usamos el comando getwd(), tendra que decirnos que nos encontramos en documentos
+
+
+## Cambiar de proyecto y ponerlo en otra carpeta
+
+Si deseamos seguir usando github cuando cambiamos de proyecto en una nueva carpeta debemos utilizar en la terminal git init (ya no es necesario usar el git bash ni los comandos anteriormente vistos , Rstudio los crea solo)
+
+Esto es opcional si se esta trabajando en equipo y dse necesita manipular un mismo documento por distintas personas.
+
+## git add
+
+Este es un comando el cual nos ayuda a añadir los archivos en nuestro computadora la lista de archivos listos para hacer un control de version (commit). Para ejemplificar esto usamos este misma presentacion. En primero lugar en la terminal realizamos un **git add "nombre del documento a gestionar"** en este caso tenemos que **git add comandos_github_rstudio.Rmd** siempre teniendo encuenta la ruta que se nos presenta en amarillo en la terminal.
+
+## git commit -m "comentario o mensaje"
+Este comando nos permite hacer el control de versiones de los archivos a los cuales los añadimos con add , el -m nos permite colocar un mensaje entre comillas que se vizualizara en nuestro repositorio de github 
+
+## git push origin main (o master)
+
+Este comando se encarga de subir las versiones de nuestros archivos a nuestro repositorio que se encuentra en la plataforma de github 
 
 ## git status
-El git status nos permite ver que cambios se han realizado en el proyecto(repositorio la ultima vez que se utilizo o se manipulo los documentos del proyecto ), Es importante siempre hacer un git status para ver que cambios se realizo en el control de versiones para no tener problemas o averiguar lo ultimo que se realizó
+
+finalmente tenemos al importante git status que nos permite ver que cambios se han realizado en el proyecto(repositorio la ultima vez que se utilizo o se manipulo los documentos del proyecto ), Es importante siempre hacer un git status para ver que cambios se realizo en el control de versiones para no tener problemas o averiguar lo ultimo que se realizó
+
+Cada parteque nos presenta el comando git status son las siguientes
+
+- en la primera parte en verde tenemos a los archivos añadidos con git add y  listos para realizar un commit
+
+- segundo tenemos los archivos modificados pero los cuales no han sido añadidos por git add por lo cual no podemos realizar una version ni comentarios sobre ellos
+
+##
+- Tercero : Aqui se encuentran los archivos que se encuentran en el directorio pero que no se han modificado ni se los a añadido con git add para un control de versiones.,
 
 ## Slide with R Output
 
