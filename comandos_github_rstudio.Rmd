@@ -1,0 +1,50 @@
+---
+title: "Commandos iniciales para el uso de github desde Restudio"
+author: "Dario Quishpe"
+date: "13/5/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## GitHub(Desde windows)
+Esta es una plataforma para realizar proyectos y para tener control sobre las versiones de los archivos que se utilizan en dichos proyectos.
+En esta presentacion explicaré como se utiliza los principales comandos para el uso de github mediante  la terminal de Rstudio .
+
+## Primero tener bien instalado git , tener una cuenta en github y tener instalado el R,Rstudio.
+Para poder hacer uso de esta herramienta vamos a tener que abriri el programa git bash en el cual deberos usar
+
+- git config - -global user.mail "El correo electronico de la cuenta de github" 
+- git config - -global user.name "Cualquier nombre con el que te vayas a identificar al usar github"
+
+En este ultimo item puede ser cualquier nombre.
+
+## directorios
+
+Ahora como git trabaja sobre directorios debemos configurar la ruta en la cual vamos a usar para gestionar nuestros documentos, para ello usamos los siguientes comandos 
+
+- $ cd Documents/
+
+Acontinuacion debe aparecer el directorio en amarillo.
+
+Finalmente pegamos el enlace al directorio que vayamos a utilizar(esto depende si se trabaja en grupo o no ) , con esto ultimo en la carpeta documentos debe estar la carpeta en la cual se va a trabajar.
+
+Para verificar que todo se haya realizado correctamente usamos el comando gitwd(), tendra que decirnos que nos encontramos en  documentos
+
+## git status
+El git status nos permite ver que cambios se han realizado en el proyecto(repositorio la ultima vez que se utilizo o se manipulo los documentos del proyecto ), Es importante siempre hacer un git status para ver que cambios se realizo en el control de versiones para no tener problemas o averiguar lo ultimo que se realizó
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
